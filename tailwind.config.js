@@ -8,5 +8,13 @@ module.exports = {
     // Or if using `src` directory:
     './src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  theme: {},
+  theme: {
+    extend: {
+      colors: {
+        'cold-white': '#EFF3F4',
+        'redi-red': '#E6203D',
+        'blu-blue': '#4F8EBE',
+      },
+    },
+  },
 };
