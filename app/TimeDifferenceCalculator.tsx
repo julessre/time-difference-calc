@@ -1,16 +1,25 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 
 export default function TimeDifferenceCalculator() {
   const [country, setCountry] = useState('');
   const [region, setRegion] = useState('');
 
-  async function getTimeDifference() {
-    const response = await fetch(
-      `https://api.geoapify.com/v1/geocode/search?country=${country}&state=${region}&apiKey=${process.env.REACT_APP_API_KEY}`,
-    );
-  }
+  useEffect(() => {
+    const getTimeDifference = async () => {
+      const response = await fetch(
+        `https://api.geoapify.com/v1/geocode/search?country=${country}&state=${region}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`,
+      );
+
+      const data = await response.json();
+      const coordinates = data.features?.[0].geometry?.coordinates;
+      console.log('response:', response);
+      console.log('data:', data);
+      console.log('Coord:', coordinates);
+    };
+    getTimeDifference().catch(console.error);
+  });
 
   return (
     <div className="bg-cold-white w-dvw h-dvh">
