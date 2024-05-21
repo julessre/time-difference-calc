@@ -10,22 +10,21 @@ export default function PickLocation() {
   const [timezone, setTimezone] = useState('');
   const [timeDifference, setTimeDifference] = useState(null);
 
-  const calculateTimeDifference = () => {
-    const currentTime = new Date();
-    console.log('currenttime:', currentTime);
-
-    // Get the time in the specified location
-    const locationTime = toZonedTime(new Date(), timezone);
-    console.log('locationTime:', locationTime);
-
-    // Calculate the time difference
-    const diff = differenceInHours(locationTime, currentTime);
-    console.log('diff:', diff);
-
-    return diff;
-  };
-
   useEffect(() => {
+    const calculateTimeDifference = () => {
+      const currentTime = new Date();
+      console.log('currenttime:', currentTime);
+
+      // Get the time in the specified location
+      const locationTime = toZonedTime(new Date(), timezone);
+      console.log('locationTime:', locationTime);
+
+      // Calculate the time difference
+      const diff = differenceInHours(locationTime, currentTime);
+      console.log('diff:', diff);
+
+      return diff;
+    };
     const getTimeDifference = async () => {
       const response = await fetch(
         `https://api.geoapify.com/v1/geocode/search?country=${country}&state=${region}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`,
@@ -44,20 +43,22 @@ export default function PickLocation() {
       }
       // console.log('timeDifference:', timeDifference);
     };
-    getTimeDifference().catch(console.error);
-  });
+    if (country && region) {
+      getTimeDifference().catch(console.error);
+    }
+  }, [country, region, timezone]);
 
   return (
     <div className="bg-cold-white w-dvw h-dvh">
       <div className="p-5 my-5 text-xl mt-10 mr-1">
         <div className="text-center">
-          <h1 className="text-3xl font-medium font-sans text-redi-red">
+          <h1 className="text-3xl font-medium font-sans text-redi-red mt-10 mb-6">
             Time Difference Calculator
           </h1>
           <div>
             <CountryDropdown
               value={country}
-              onChange={(val) => setCountry(val)}
+              onChange={(val: string) => setCountry(val)}
               className="inline-flex p-5 my-5 mr-1 justify-center gap-x-1. rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-blu-blue hover:bg-gray-50"
               id="menu-button"
               aria-expanded="true"
@@ -66,11 +67,11 @@ export default function PickLocation() {
             <RegionDropdown
               country={country}
               value={region}
-              onChange={(val) => setRegion(val)}
+              onChange={(val: string) => setRegion(val)}
               className="inline-flex p-5 my-5 justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-blu-blue hover:bg-gray-50"
             />
           </div>
-          <div className="text-2xl font-regular font-sans text-blu-blue">
+          <div className="text-2xl font-regular font-sans text-blu-blue mt-10 mb-4">
             Timezone: {timezone}
           </div>
           <div className="text-2xl font-regular font-sans text-blu-blue">
