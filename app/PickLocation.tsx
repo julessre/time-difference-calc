@@ -8,21 +8,22 @@ export default function PickLocation() {
   const [country, setCountry] = useState('');
   const [region, setRegion] = useState('');
   const [timezone, setTimezone] = useState('');
+  const [timeDifference, setTimeDifference] = useState(null);
 
-  // const calculateTimeDifference = () => {
-  //   const currentTime = new Date();
-  //   console.log('currenttime:', currentTime);
+  const calculateTimeDifference = () => {
+    const currentTime = new Date();
+    console.log('currenttime:', currentTime);
 
-  //   // Get the time in the specified location
-  //   const locationTime = toZonedTime(new Date(), timezone);
-  //   console.log('locationTime:', locationTime);
+    // Get the time in the specified location
+    const locationTime = toZonedTime(new Date(), timezone);
+    console.log('locationTime:', locationTime);
 
-  //   // Calculate the time difference
-  //   const diff = differenceInHours(locationTime, currentTime);
-  //   console.log('diff:', diff);
+    // Calculate the time difference
+    const diff = differenceInHours(locationTime, currentTime);
+    console.log('diff:', diff);
 
-  //   return diff;
-  // };
+    return diff;
+  };
 
   useEffect(() => {
     const getTimeDifference = async () => {
@@ -32,22 +33,18 @@ export default function PickLocation() {
 
       const data = await response.json();
       // const coordinates = data.features?.[0].geometry?.coordinates;
-      setTimezone(data.features?.[0].properties?.timezone.offset_DST);
+      const timezoneOffset = data.features?.[0].properties?.timezone.offset_DST;
 
-      console.log('response:', response);
-      console.log('data:', data);
       // console.log('Coord:', coordinates);
-      console.log('timezone:', timezone);
+      // console.log('timezone:', timezone);
+      if (timezoneOffset) {
+        setTimezone(timezoneOffset);
+        const timeDiff = calculateTimeDifference();
+        setTimeDifference(timeDiff);
+      }
+      // console.log('timeDifference:', timeDifference);
     };
     getTimeDifference().catch(console.error);
-
-    // if (timezone) {
-    //   // Fetch location by coordinates to determine timezone
-    //   const timeDifference = calculateTimeDifference();
-    //   return timeDifference;
-    // } else {
-    //   alert('Coordinates for the provided country and region not found');
-    // }
   });
 
   return (
@@ -73,7 +70,13 @@ export default function PickLocation() {
               className="inline-flex p-5 my-5 justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-blu-blue hover:bg-gray-50"
             />
           </div>
-          <div>Timezone: {timezone}</div>
+          <div className="text-2xl font-regular font-sans text-blu-blue">
+            Timezone: {timezone}
+          </div>
+          <div className="text-2xl font-regular font-sans text-blu-blue">
+            Time Difference to your location:{' '}
+            <span className="font-bold ">{timeDifference} hours </span>
+          </div>
         </div>
       </div>
     </div>
