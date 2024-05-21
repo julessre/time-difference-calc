@@ -1,5 +1,5 @@
-import TimeDifferenceCalculator from './TimeDifferenceCalculator';
+import PickLocation from './PickLocation';
 
 export default function App() {
-  return <TimeDifferenceCalculator />;
+  return <PickLocation />;
 }
